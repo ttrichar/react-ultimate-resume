@@ -10,6 +10,7 @@ permissions: write-all
 
 env:
   Branches: master
+  CI: false
   MainBranch: master
   NPMRegistry: https://registry.npmjs.org/
   InstallCommand: yarn install
