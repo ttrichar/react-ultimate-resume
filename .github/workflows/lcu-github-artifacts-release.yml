@@ -2,15 +2,14 @@ name: ttrichar/react-ultimate-resume
 
 on:
   push:
-    branches: [master]
+    branches: [master,develop]
   pull_request:
-    branches: [master]
+    branches: [master,develop]
 
 permissions: write-all
 
 env:
-  Branches: master
-  CI: false
+  Branches: master,develop
   MainBranch: master
   NPMRegistry: https://registry.npmjs.org/
   InstallCommand: yarn install
