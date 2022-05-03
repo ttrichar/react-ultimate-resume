@@ -10,6 +10,7 @@ permissions: write-all
 
 env:
   Branches: master,develop
+  CI: false
   MainBranch: master
   NPMRegistry: https://registry.npmjs.org/
   InstallCommand: yarn install
@@ -54,18 +55,6 @@ jobs:
         uses: fathym/file-existence-action@master
         with:
           files: "package.json"
-
-      # bump version and push tag
-      - name: Bump version and push tag
-        id: versionBump
-        uses: fathym/github-tag-action@master
-        if: ${{ steps.package_json_exists.outputs.files_exists == 'true' }}
-        env:
-          DEFAULT_BUMP: ${{ steps.vars.outputs.versionBump }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCHES: .*
-          WITH_V: false
-      - run: echo "New version is ${{ steps.versionBump.outputs.new_tag }}"
 
       # replace text in package.json for main branch
       - name: replace version text for main branch
@@ -115,3 +104,15 @@ jobs:
           webhook_url: ${{ secrets.LCU_WEBHOOK_URL }}
           webhook_secret: ${{ secrets.LCU_WEBHOOK_SECRET }}
           data: '{ "EnterpriseLookup": "${{ secrets.LCU_ENTERPRISE_LOOKUP }}", "Username": "${{ secrets.LCU_USERNAME }}" }'
+          
+      # bump version and push tag
+      - name: Bump version and push tag
+        id: versionBump
+        uses: fathym/github-tag-action@master
+        if: ${{ steps.package_json_exists.outputs.files_exists == 'true' }}
+        env:
+          DEFAULT_BUMP: ${{ steps.vars.outputs.versionBump }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCHES: .*
+          WITH_V: false
+      - run: echo "New version is ${{ steps.versionBump.outputs.new_tag }}"
