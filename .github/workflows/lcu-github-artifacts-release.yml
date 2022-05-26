@@ -9,8 +9,8 @@ on:
 permissions: write-all
 
 env:
-  Branches: master,develop
   CI: false
+  Branches: master,develop
   MainBranch: master
   NPMRegistry: https://registry.npmjs.org/
   InstallCommand: yarn install
@@ -97,14 +97,6 @@ jobs:
           name: ${{ github.event.organization.name }}-${{ github.event.repository.name }}
           path: ${{ env.Output }}
 
-      # webhook to LowCodeUnit
-      - name: Invoke deployment hook
-        uses: fathym/workflow-webhook@v2
-        env:
-          webhook_url: ${{ secrets.LCU_WEBHOOK_URL }}
-          webhook_secret: ${{ secrets.LCU_WEBHOOK_SECRET }}
-          data: '{ "EnterpriseLookup": "${{ secrets.LCU_ENTERPRISE_LOOKUP }}", "Username": "${{ secrets.LCU_USERNAME }}" }'
-          
       # bump version and push tag
       - name: Bump version and push tag
         id: versionBump
@@ -116,3 +108,11 @@ jobs:
           RELEASE_BRANCHES: .*
           WITH_V: false
       - run: echo "New version is ${{ steps.versionBump.outputs.new_tag }}"
+      
+      # webhook to LowCodeUnit
+      - name: Invoke deployment hook
+        uses: fathym/workflow-webhook@v2
+        env:
+          webhook_url: ${{ secrets.LCU_WEBHOOK_URL }}
+          webhook_secret: ${{ secrets.LCU_WEBHOOK_SECRET }}
+          data: '{ "EnterpriseLookup": "${{ secrets.LCU_ENTERPRISE_LOOKUP }}", "Username": "${{ secrets.LCU_USERNAME }}" }'
